@@ -81,6 +81,62 @@
                     </div>
                 </div>
             }
+
+            @* Begin Stars filter function *@
+            <br />
+            <div id="rating-filter">
+                <div class="card">
+                    <div class="card-header" id="ratingFilter">
+                        <h5 class="mb-0">
+                            <a data-toggle="collapse" href="#rating" aria-expanded="true" aria-controls="collapse-rating">
+                                @Localizer["Rating"]
+                                <i></i>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapse-rating" class="collapse show" aria-labelledby="ratingFilter" data-parent="#rating">
+                        <div class="card-body">
+                            <span class="star">
+                                <a id="fiveStar" onclick="ratingFunction(5)">
+                                    <span class="filled-stars" style="width: 100%;"><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span></span>
+                                </a>
+                                <br />
+                                <a id="fourStar" onclick="ratingFunction(4)">
+                                    <span class="filled-stars" style="width: 100%;"><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span style="color:orange" class="star"><i class="fa fa fa-star-o"></i></span></span><span> And up</span>
+                                </a>
+                                <br />
+                                <a id="threeStar" onclick="ratingFunction(3)">
+                                    <span class="filled-stars" style="width: 100%;"><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span style="color:orange" class="star"><i class="fa fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa fa-star-o"></i></span></span><span> And up</span>
+                                </a>
+                                <br />
+                                <a id="twoStar" onclick="ratingFunction(2)">
+                                    <span class="filled-stars" style="width: 100%;"><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa fa-star-o"></i></span></span><span> And up</span>
+                                </a>
+                                <br />
+                                <a id="oneStar" onclick="ratingFunction(1)">
+                                    <span class="filled-stars" style="width: 100%;"><span class="star"><i style="color:orange" class="fa fa-star"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span></span><span> And up</span>
+                                </a>
+                                <br />
+                                <a id="zeroStar" onclick="ratingFunction(0)">
+                                    <span class="filled-stars-o" style="width: 100%;"><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span><span style="color:orange" class="star"><i class="fa fa-star-o"></i></span></span><span> And up</span>
+                                </a>
+                            </span>
+                            <input hidden type="text" name="rating" id="ratingId" />
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <script>
+
+                function ratingFunction(_value) {
+                    document.getElementById('ratingId').value = _value;
+                    document.getElementById('productFilter').submit();
+                }
+            </script>
+            @* End Stars filter function *@
         </form>
     </div>
     <div class="col-md-9">

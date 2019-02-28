@@ -39,6 +39,13 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.ViewModels
 
         public bool HasVariation => Variations.Any();
 
+        //add brand to model
+        public long? BrandId { get; set; }
+
+        public string BrandName { get; set; }
+
+        public string BrandSlug { get; set; }
+
         public IList<ProductDetailOption> AvailableOptions
         {
             get
@@ -60,6 +67,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.ViewModels
                 return options.ToList();
             }
         }
+        public IList<ProductThumbnail> Products { get; set; } = new List<ProductThumbnail>();
 
         public IDictionary<string, ProductOptionDisplay> OptionDisplayValues { get; set; } = new Dictionary<string, ProductOptionDisplay>();
 

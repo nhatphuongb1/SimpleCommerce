@@ -12,6 +12,8 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.ViewModels
 
         public string Brand { get; set; }
 
+        public int? Rating { get; set; }
+
         public string Category { get; set; }
 
         public int Page { get; set; }

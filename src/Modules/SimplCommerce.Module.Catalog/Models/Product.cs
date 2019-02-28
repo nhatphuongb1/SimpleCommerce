@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using SimplCommerce.Module.Catalog.Areas.Catalog.ViewModels;
 using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Tax.Models;
 
@@ -67,6 +68,8 @@ namespace SimplCommerce.Module.Catalog.Models
         public IList<ProductCategory> Categories { get; protected set; } = new List<ProductCategory>();
 
         public IList<ProductPriceHistory> PriceHistories { get; protected set; } = new List<ProductPriceHistory>();
+
+        public IList<ProductThumbnail> SameBrandProducts { get; set; } = new List<ProductThumbnail>();
 
         public int ReviewsCount { get; set; }
 
