@@ -11,6 +11,7 @@ using SimplCommerce.Module.Catalog.Models;
 using SimplCommerce.Module.Catalog.Services;
 using SimplCommerce.Module.Core.Areas.Core.ViewModels;
 using SimplCommerce.Module.Core.Events;
+using SimplCommerce.Module.Core.Models;
 using SimplCommerce.Module.Core.Services;
 
 namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
@@ -24,14 +25,16 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
         private readonly IMediator _mediator;
         private readonly IProductPricingService _productPricingService;
         private readonly IRepository<Brand> _brandRepository;
+        private readonly IRepository<Vendor> _vendorRepository;
 
-        public ProductController(IRepository<Product> productRepository, IMediaService mediaService, IMediator mediator, IProductPricingService productPricingService,IRepository<Brand> brandRepository)
+        public ProductController(IRepository<Product> productRepository, IMediaService mediaService, IMediator mediator, IProductPricingService productPricingService,IRepository<Brand> brandRepository, IRepository<Vendor> vendorRepository)
         {
             _productRepository = productRepository;
             _mediaService = mediaService;
             _mediator = mediator;
             _productPricingService = productPricingService;
             _brandRepository = brandRepository;
+            _vendorRepository = vendorRepository;
         }
 
         [HttpGet("product/product-overview")]
@@ -61,6 +64,8 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 ShortDescription = product.ShortDescription,
                 ReviewsCount = product.ReviewsCount,
                 RatingAverage = product.RatingAverage,
+                BrandId = product.BrandId,
+                VendorId = product.VendorId
             };
 
             MapProductVariantToProductVm(product, model);
@@ -87,6 +92,7 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
 
             // Get brand
             var brand = _brandRepository.Query().FirstOrDefault(x => x.Id == product.BrandId);
+            var vendor = _vendorRepository.Query().FirstOrDefault(x => x.Id == product.VendorId);
 
             var model = new ProductDetail
             {
@@ -105,12 +111,17 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
                 Specification = product.Specification,
                 ReviewsCount = product.ReviewsCount,
                 RatingAverage = product.RatingAverage,
-                // add brand id 
+                //  brand id 
                 BrandId = product.BrandId,
-                BrandName = brand.Name,
-                BrandSlug = brand.Slug,
+                
+                BrandName = brand==null?"Unknown":brand.Name,
+                BrandSlug = brand==null? "Unknown": brand.Slug,
+                //  vendor id
+                VendorId = product.VendorId,
+                VendorName = vendor==null?"Unknown":vendor.Name,
+                VendorSlug = vendor==null?"Unknown":vendor.Slug,
                 Attributes = product.AttributeValues.Select(x => new ProductDetailAttribute { Name = x.Attribute.Name, Value = x.Value }).ToList(),
-                Categories = product.Categories.Select(x => new ProductDetailCategory { Id = x.CategoryId, Name = x.Category.Name, Slug = x.Category.Slug }).ToList()
+                Categories = product.Categories.Select(x => new ProductDetailCategory { Id = x.CategoryId, Name = x.Category.Name, Slug = x.Category.Slug }).ToList(),
             };
 
             MapProductVariantToProductVm(product, model);
@@ -120,17 +131,29 @@ namespace SimplCommerce.Module.Catalog.Areas.Catalog.Controllers
 
             await _mediator.Publish(new EntityViewed { EntityId = product.Id, EntityTypeId = "Product" });
             _productRepository.SaveChanges();
-
-            var query = _productRepository.Query().Where(x => x.BrandId == product.BrandId && x.IsPublished && x.IsVisibleIndividually).Include(x=>x.ThumbnailImage);
-            var products = query
+            // Same brand products
+            var brandQuery = _productRepository.Query().Where(x => x.BrandId == product.BrandId && x.IsPublished && x.IsVisibleIndividually).Include(x=>x.ThumbnailImage);
+            var brandPoducts = brandQuery
                 .Select(x => ProductThumbnail.FromProduct(x))
                 .ToList();
-            foreach (var product2 in products)
+            foreach (var item in brandPoducts)
             {
-                product2.ThumbnailUrl = _mediaService.GetThumbnailUrl(product2.ThumbnailImage);
-                product2.CalculatedProductPrice = _productPricingService.CalculateProductPrice(product2);
+                item.ThumbnailUrl = _mediaService.GetThumbnailUrl(item.ThumbnailImage);
+                item.CalculatedProductPrice = _productPricingService.CalculateProductPrice(item);
             }
-            model.Products = products;
+            model.SameBrandProducts = brandPoducts;
+            // Same vendor products
+            var vendorQuery = _productRepository.Query().Where(x => x.VendorId == product.VendorId && x.IsPublished && x.IsVisibleIndividually).Include(x => x.ThumbnailImage);
+            var vendorProducts = vendorQuery
+                .Select(x => ProductThumbnail.FromProduct(x))
+                .ToList();
+            foreach (var item in vendorProducts)
+            {
+                item.ThumbnailUrl = _mediaService.GetThumbnailUrl(item.ThumbnailImage);
+                item.CalculatedProductPrice = _productPricingService.CalculateProductPrice(item);
+            }
+            model.SameVendorProducts = vendorProducts;
+
             return View(model);
         }
 

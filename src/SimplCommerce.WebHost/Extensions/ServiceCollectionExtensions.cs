@@ -92,7 +92,9 @@ namespace SimplCommerce.WebHost.Extensions
                 {
                     foreach (var module in modules.Where(x => !x.IsBundledWithHost))
                     {
+#pragma warning disable CS0618 // Type or member is obsolete
                         o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Assembly.Location));
+#pragma warning restore CS0618 // Type or member is obsolete
                     }
                 })
                 .AddViewLocalization()

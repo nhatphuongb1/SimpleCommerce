@@ -266,10 +266,12 @@
 }
 
 @await Component.InvokeAsync("ProductRecentlyViewed", new { productId = Model.Id })
+<br />
+@* Same Brand Products *@
 <div>
-    <h6>Same Vendor product @Model.BrandName</h6>
+    <h3 style="color:dodgerblue">Same brand products: <span style="color:orangered">@Model.BrandName</span> </h3>
     <div class="row product-list">
-        @foreach (var product in Model.Products.Take(5))
+        @foreach (var product in Model.SameBrandProducts.Take(5))
         {
             <div style="width: 20%;">
                 <div style="padding: 0 3px;">
@@ -279,7 +281,21 @@
         }
     </div>
 </div>
-
+<br />
+@* Same Vendor Products *@
+<div>
+    <h3 style="color:dodgerblue">Same vendor products: <span style="color:orangered">@Model.VendorName</span></h3>
+    <div class="row product-list">
+        @foreach (var product in Model.SameVendorProducts.Take(5))
+        {
+            <div style="width: 20%;">
+                <div style="padding: 0 3px;">
+                    <partial name="_ProductThumbnail" model="product" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
 <div>
     <h3>@Localizer["Customer reviews"]</h3>
     @await Component.InvokeAsync("Review", new { entityId = Model.Id, entityTypeId = "Product" })
